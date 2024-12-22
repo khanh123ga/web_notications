@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Manage Groups{% endblock %}
+{% block content %}
+<h2>Quản lý nhóm</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Tên nhóm</th>
+            <th>Trạng thái</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for group in groups %}
+            <tr>
+                <td>{{ group.name }}</td>
+                <td>
+                    <a href="{{ url_for('edit_group', group_id=group.id) }}" class="btn btn-secondary">Chỉnh sửa</a>
+                    <a href="{{ url_for('view_group', group_id=group.id) }}" class="btn btn-info">Xem</a>
+                    <form action="{{ url_for('delete_group', group_id=group.id) }}" method="POST" style="display:inline;">
+                        <button type="submit" class="btn btn-danger">Xóa</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,12 @@
+.accordion-item {
+    border: none;
+    margin-bottom: 10px;
+}
+.accordion-button {
+    border-radius: 5px;
+    background: linear-gradient(to right, #f8f9fa, #e9ecef);
+}
+.accordion-body {
+    border-left: 3px solid #0d6efd;
+    padding: 15px;
+}

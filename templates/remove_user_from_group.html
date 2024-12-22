@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Remove User from Group{% endblock %}
+{% block content %}
+<h2>Remove User from Group</h2>
+<form method="POST" action="{{ url_for('remove_user_from_group', group_id=group.id) }}">
+    <div class="form-group">
+        <label for="user">User</label>
+        <select class="form-control" id="user" name="user_id" required>
+            {% for user in group.users %}
+                <option value="{{ user.id }}">{{ user.username }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Remove</button>
+</form>
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<h1>Xin Chào, {{ current_user.username }}!</h1>
+
+{% if current_user.is_authenticated %}
+    <div class="d-flex justify-content-between mb-3">
+        <div>
+            <a href="{{ url_for('sent_notifications') }}" class="btn btn-primary">Lịch sử thông báo</a>
+            <a href="{{ url_for('create_group') }}" class="btn btn-secondary">Tạo nhóm</a>
+            <a href="{{ url_for('send_notification_to_user') }}" class="btn btn-success">Gửi thông báo đến người</a>
+            <a href="{{ url_for('send_notification_to_group') }}" class="btn btn-warning">Gửi thông báo đến nhóm</a>
+        </div>
+    </div>
+{% else %}
+    <p>Please log in to access additional features.</p>
+{% endif %}
+
+<div class="container mt-4">
+    {% if notifications %}
+        <h2 class="text-center mb-4">Thông Báo Của Bạn</h2>
+        <div class="accordion shadow-lg p-3 mb-5 bg-body-tertiary rounded" id="notificationAccordion">
+            {% for notification in notifications %}
+                <div class="accordion-item border-0">
+                    <h2 class="accordion-header" id="heading{{ loop.index }}">
+                        <button class="accordion-button collapsed bg-light" type="button" 
+                                data-bs-toggle="collapse" 
+                                data-bs-target="#collapse{{ loop.index }}" 
+                                aria-expanded="false" 
+                                aria-controls="collapse{{ loop.index }}">
+                            <div class="row w-100">
+                                <div class="col-md-3 col-sm-6">
+                                    <span class="badge bg-secondary">Gửi bởi:</span> 
+                                    <span class="text-dark">
+                                        {% if notification.history %}
+                                            {{ notification.history[0].sender.username }}
+                                        {% else %}
+                                            Unknown
+                                        {% endif %}
+                                    </span>
+                                </div>
+                                <div class="col-md-3 col-sm-6">
+                                    <span class="badge bg-info text-dark">Loại:</span>
+                                    <span class="fw-bold">{{ notification.type }}</span>
+                                </div>
+                                <div class="col-md-3 col-sm-6">
+                                    {% if notification.category == 'Khẩn cấp' %}
+                                        <span class="badge bg-danger">Khẩn cấp</span>
+                                    {% elif notification.category == 'Cá nhân' %}
+                                        <span class="badge bg-success">Cá nhân</span>
+                                    {% elif notification.category == 'Nhóm' %}
+                                        <span class="badge bg-primary">Nhóm</span>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-3 col-sm-6">
+                                    {% if notification.history and notification.history[0].is_seen %}
+                                        <span class="badge bg-success">Đã đọc</span>
+                                    {% else %}
+                                        <span class="badge bg-warning text-dark">Chưa đọc</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </button>
+                    </h2>
+                    <div id="collapse{{ loop.index }}" 
+                         class="accordion-collapse collapse" 
+                         aria-labelledby="heading{{ loop.index }}" 
+                         data-bs-parent="#notificationAccordion">
+                        <div class="accordion-body bg-white shadow-sm">
+                            <p><strong>Nội dung:</strong> {{ notification.content }}</p>
+                            {% if notification.file_name %}
+                                <a href="{{ url_for('download_file', filename=notification.file_name) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                    Tải File
+                                </a>
+                            {% endif %}
+                            <p><strong>Ngày tạo:</strong> {{ notification.date_created.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+                            {% if notification.history and not notification.history[0].is_seen %}
+                                <form action="{{ url_for('mark_as_seen', notification_id=notification.history[0].id) }}" method="POST" class="mt-2">
+                                    <button type="submit" class="btn btn-sm btn-success">Đánh dấu đã đọc</button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info text-center mt-4">
+            <p>Bạn không có thông báo nào</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

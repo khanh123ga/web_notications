@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Create Notification{% endblock %}
+{% block content %}
+<div class="text-center mb-4">
+    <h1>Thông báo bạn đã gửi</h1>
+</div>
+
+<!-- Form tìm kiếm thông báo -->
+<form method="GET" action="{{ url_for('search_notifications') }}" class="mb-4 text-center">
+    <input type="text" name="search" placeholder="Search notifications..." value="{{ request.args.get('search') }}" class="form-control d-inline-block" style="width: 60%; max-width: 400px;">
+    <button type="submit" class="btn btn-primary ml-2">Tìm kiếm</button>
+</form>
+
+{% if notifications %}
+<div class="d-flex justify-content-center">
+    <table class="table table-bordered" style="max-width: 90%; width: 800px;">
+        <thead>
+            <tr>
+                <th>Nội dung</th>
+                <th>Kiểu</th>
+                <th>Loại</th>
+                <th>File</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for notification in notifications %}
+            <tr>
+                <td>{{ notification.content }}</td>
+                <td>{{ notification.type }}</td>
+                <td>{{ notification.category }}</td>
+                <td>
+                    {% if notification.file_name %}
+                        <a href="{{ url_for('download_file', filename=notification.file_name) }}" class="btn btn-success btn-sm" target="_blank">Download File</a>
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+<!-- Hiển thị thông báo đã gửi dưới dạng accordion -->
+{% if sent_notifications %}
+<div class="accordion" id="sentNotificationsAccordion">
+    {% for notification in sent_notifications %}
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading{{ loop.index }}">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="false" aria-controls="collapse{{ loop.index }}">
+                    <div class="d-flex justify-content-between w-100">
+                        <div>
+                            <strong>Recipient:</strong> 
+                            {% if notification.group %}
+                                {{ notification.group.name }}
+                            {% elif notification.recipient %}
+                                {{ notification.recipient.username }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                            <br>
+                            <strong>Title:</strong> {{ notification.notification.type }} <br>
+                            <strong>Category:</strong> {{ notification.notification.category }} <br>
+                            <strong>Sent At:</strong> {{ notification.date_sent.strftime('%Y-%m-%d %H:%M:%S') }} <br>
+                            <strong>Status:</strong>
+                            {% if notification.is_seen %}
+                                <span class="badge bg-success">Đã đọc</span>
+                            {% else %}
+                                <span class="badge bg-warning">Chưa đọc</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </button>
+            </h2>
+            <div id="collapse{{ loop.index }}" class="accordion-collapse collapse" aria-labelledby="heading{{ loop.index }}" data-bs-parent="#sentNotificationsAccordion">
+                <div class="accordion-body">
+                    <p><strong>Content:</strong> {{ notification.notification.content }}</p>
+                    {% if notification.notification.file_name %}
+                        <a href="{{ url_for('download_file', filename=notification.notification.file_name) }}" class="btn btn-success btn-sm" target="_blank">Download File</a>
+                    {% endif %}
+                    <form action="{{ url_for('delete_notification', notification_id=notification.notification.id) }}" method="POST" onsubmit="return confirm('Bạn muốn xóa thông báo chứ?');">
+                        <button type="submit" class="btn btn-danger btn-sm mt-2">Xóa</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

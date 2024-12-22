@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Send Notification to Group Members{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+    <div class="card" style="width: 100%; max-width: 600px;">
+        <div class="card-body">
+            <h1 class="text-center mb-4">Gửi thông báo đến nhóm</h1>
+
+            <!-- Form gửi thông báo -->
+            <form method="POST" enctype="multipart/form-data">
+                <!-- Tiêu đề thông báo -->
+                <div class="form-group mb-3">
+                    <label for="title" class="text-center d-block">Tiêu đề:</label>
+                    <input type="text" id="title" name="title" class="form-control" required>
+                </div>
+
+                <!-- Chọn Category -->
+                <div class="form-group mb-3">
+                    <label for="category" class="text-center d-block">Loại:</label>
+                    <select id="category" name="category" class="form-control" required>
+                        <option value="Khẩn cấp">Khẩn cấp</option>
+                        <option value="Cá nhân">Cá nhân</option>
+                        <option value="Nhóm">Nhóm</option>
+                    </select>
+                </div>
+
+                <!-- Nội dung thông báo -->
+                <div class="form-group mb-3">
+                    <label for="content" class="text-center d-block">Nội dung:</label>
+                    <textarea id="content" name="content" class="form-control" required></textarea>
+                </div>
+
+                <!-- File đính kèm -->
+                <div class="form-group mb-3">
+                    <label for="file" class="text-center d-block">Chọn File:</label>
+                    <input type="file" id="file" name="file" class="form-control">
+                </div>
+
+                <!-- Chọn nhóm nhận -->
+                <div class="form-group mb-3">
+                    <label for="groups" class="text-center d-block">Chọn nhóm:</label>
+                    <select id="groups" name="group_ids" class="form-control" multiple required>
+                        {% for group in groups %}
+                            <option value="{{ group.id }}">{{ group.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <small class="form-text text-muted text-center">Nhấn giữ Ctrl để chọn nhiều nhóm</small>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" name="send_notification" class="btn btn-primary w-100">Gửi thông báo</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

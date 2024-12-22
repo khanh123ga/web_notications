@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Add User to Group{% endblock %}
+{% block content %}
+<h2>Add User to Group</h2>
+<form method="POST" action="{{ url_for('add_user_to_group', group_id=group.id) }}">
+    <div class="form-group">
+        <label for="user">User</label>
+        <select class="form-control" id="user" name="user_id" required>
+            {% for user in users %}
+                <option value="{{ user.id }}">{{ user.username }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Add</button>
+</form>
+{% endblock %}

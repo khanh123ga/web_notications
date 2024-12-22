@@ -1,0 +1,42 @@
+<!-- {% extends "base.html" %}
+{% block title %}Manage Notifications{% endblock %}
+{% block content %}
+<h2>Manage Notifications</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Content</th>
+            <th>Type</th>
+            <th>Category</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for notification in notifications %}
+            <tr>
+                <td>{{ notification.content }}</td>
+                <td>{{ notification.type }}</td>
+                <td>{{ notification.category }}</td>
+                <td>
+                    <form action="{{ url_for('delete_notification', notification_id=notification.id) }}" method="POST" style="display:inline;">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %} -->
+<!-- Trong template index.html hoặc notifications.html -->
+{% for notification in notifications %}
+    <div class="notification">
+        <p><strong>Type:</strong> {{ notification.type }}</p>
+        <p><strong>Content:</strong>{{ notification.content }}</p>
+        <p><strong>Category:</strong> {{ notification.category }}</p>
+        <p><strong>Date:</strong> {{ notification.date_created.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+        {% if notification.file_name %}
+            <p><strong>File:</strong> <a href="{{ url_for('static', filename='uploads/' + notification.file_name) }}" download>Download</a></p>
+        {% endif %}
+    </div>
+{% endfor %}
+

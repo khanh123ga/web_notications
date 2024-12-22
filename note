@@ -1,0 +1,23 @@
+<ul class="list-group">
+    {% for notification in notifications %}
+        <li class="list-group-item">
+            <p><strong>Tittle:</strong> {{ notification.type }}</p>
+            <p> 
+                <strong>Category:</strong> 
+                {% if notification.category == 'Khẩn cấp' %}
+                    <span style="font-weight: bold; color: red;">{{ notification.category }}</span>
+                {% else %}
+                    {{ notification.category }}
+                {% endif %}
+            </p>
+            <p><strong>Content:</strong>{{ notification.content }}</p>
+            <!-- Show file name if available -->
+            {% if notification.file_name %}
+                <p><strong>File:</strong> <a href="{{ url_for('static', filename='uploads/' + notification.file_name) }}" target="_blank">{{ notification.file_name }}</a></p>
+            {% endif %}
+            
+            <!-- Show date created -->
+            <p><strong>Date Created:</strong> {{ notification.date_created.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+        </li>
+    {% endfor %}
+</ul>
